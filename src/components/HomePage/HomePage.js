@@ -1,13 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styles from './HomePage.module.scss';
-import { Spinner, Grid, GridItem, HStack, Input, Button, Stack } from '@chakra-ui/react';
+import { Spinner, Grid, GridItem, HStack, Input, Button, Stack, Alert, AlertIcon, AlertTitle } from '@chakra-ui/react';
 import { Search2Icon } from '@chakra-ui/icons'
 import { useIsVisible } from 'react-is-visible';
 import useFetchCharacters from '../../hooks/useFetchCharacters';
 import CharacterCard from '../CharacterCard/CharacterCard';
 import useFilterCharacters from '../../hooks/useFilterCharacters';
 import CharacterGrid from '../CharacterGrid/CharacterGrid';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
 const HomePage = () => {
   const [character, fetchCharacters, fetchCharactersByPage] = useFetchCharacters();
   const [input, setInput, filteredCharacters, , fetchNextPage] = useFilterCharacters();
@@ -51,20 +52,23 @@ const HomePage = () => {
 
       {
         input != "" ?
-          <CharacterGrid
-            data={filteredCharacters?.characters}
-            totalPages={filteredCharacters?.totalPage}
-            currentPage={filteredCharacters?.currentPage}
-            onNextPage={fetchNextPage}
-            loading={filteredCharacters?.loading}
-          />
-          : <CharacterGrid
+          filteredCharacters.error == "" ?
+            <CharacterGrid
+              data={filteredCharacters?.characters}
+              totalPages={filteredCharacters?.totalPage}
+              currentPage={filteredCharacters?.currentPage}
+              onNextPage={fetchNextPage}
+              loading={filteredCharacters?.loading}
+              error={filteredCharacters?.error}
+            /> : <ErrorMessage error={filteredCharacters.error} />
+          : character.error == "" ? <CharacterGrid
             data={character?.characters}
             totalPages={character?.totalPages}
             currentPage={character?.currentPage}
             onNextPage={fetchCharactersByPage}
             loading={character?.loading}
-          />
+            error={character?.error}
+          /> : <ErrorMessage error={character.error} />
       }
 
     </div >

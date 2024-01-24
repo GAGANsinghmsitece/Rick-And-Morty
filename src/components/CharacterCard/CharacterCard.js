@@ -18,8 +18,10 @@ import {
   TagRightIcon,
   TagCloseButton,
   HStack,
+  Spinner,
 } from '@chakra-ui/react';
 import styles from './CharacterCard.module.scss';
+import ImageFallback from '../ImageFallback/ImageFallback';
 
 const CharacterCard = ({ name, image, }) => {
   return (
@@ -29,6 +31,7 @@ const CharacterCard = ({ name, image, }) => {
       border="0px"
       outline="0px"
       boxShadow="rgba(0, 0, 0, 0.35) 10px 10px 10px"
+      width="340px"
     >
       <CardBody>
         <Image
@@ -37,6 +40,9 @@ const CharacterCard = ({ name, image, }) => {
           src={image}
           alt={name}
           borderRadius='lg'
+          fallback={
+            <ImageFallback />
+          }
         />
         <Stack
           mt='6'

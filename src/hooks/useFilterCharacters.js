@@ -7,8 +7,10 @@ function useFilterCharacters() {
 		totalPage: 1,
 		currentPage: 1,
 		characters: [],
-		loading: false
+		loading: false,
+		error: ""
 	});
+	console.log(filteredCharacters);
 	const fetchNextPage = async () => {
 		try {
 			if (filteredCharacters.totalPage === filteredCharacters.currentPage) {
@@ -25,37 +27,30 @@ function useFilterCharacters() {
 							totalPage: totalPages,
 							currentPage: filteredCharacters.currentPage + 1,
 							characters: updatedResults,
-							isLoading: false
+							loading: false,
+							error: ""
 						});
 					} else {
 						setFilteredCharacters({
 							totalPage: totalPages,
 							currentPage: filteredCharacters.currentPage,
 							characters: updatedResults,
-							isLoading: true
+							loading: false,
+							error: ""
 						});
 					}
 				}
 			}
 		} catch (err) {
-			if (err?.response?.data) {
-				setFilteredCharacters(
-					{
-						totalPage: 0,
-						currentPage: 1,
-						characters: [],
-						loading: false
-					}
-				);
-			}
-			console.log(err);
+			console.log(err?.message);
+			setFilteredCharacters((prevState) => { return { ...prevState, loading: false, error: err?.message } });
 		}
 	}
 
 
 	const fetchFilteredCharacters = async () => {
 		try {
-			setFilteredCharacters((prevState) => { return { ...prevState, isLoading: true, currentPage: 1 } });
+			setFilteredCharacters((prevState) => { return { ...prevState, loading: true, currentPage: 1 } });
 			const response = await axios.get(APIURL.FilterCharacterFirstPage(input));
 			if (response?.status == 200) {
 				const totalPages = response?.data?.info?.pages;
@@ -67,31 +62,23 @@ function useFilterCharacters() {
 							totalPage: totalPages,
 							currentPage: 2,
 							characters: updatedResults,
-							isLoading: false
+							loading: false,
+							error: ""
 						});
 					} else {
 						setFilteredCharacters({
 							totalPage: totalPages,
 							currentPage: 1,
 							characters: updatedResults,
-							isLoading: true
+							loading: true,
+							error: ""
 						});
 					}
 				}
 			}
 		} catch (err) {
-			setFilteredCharacters((prevState) => { return { ...prevState, isLoading: false } });
-			if (err?.response?.data) {
-				setFilteredCharacters(
-					{
-						totalPage: 0,
-						currentPage: 1,
-						characters: [],
-						loading: false
-					}
-				);
-			}
-			console.log(err);
+			console.log(err?.message);
+			setFilteredCharacters((prevState) => { return { ...prevState, loading: false, error: err?.message } });
 		}
 	}
 	useEffect(() => {
@@ -100,7 +87,8 @@ function useFilterCharacters() {
 				totalPage: 0,
 				currentPage: 1,
 				characters: [],
-				loading: false
+				loading: false,
+				error: ""
 			});
 		} else {
 			fetchFilteredCharacters();

@@ -6,7 +6,8 @@ function useFetchCharacters() {
 		totalPages: 1,
 		currentPage: 1,
 		characters: [],
-		loading: false
+		loading: false,
+		error: ""
 	});
 	const fetchCharactersByPage = async () => {
 		try {
@@ -22,27 +23,29 @@ function useFetchCharacters() {
 							totalPages: totalPages,
 							currentPage: character.currentPage + 1,
 							characters: updatedResults,
-							isLoading: false
+							loading: false,
+							error: ""
 						});
 					} else {
 						setCharacter({
 							totalPages: totalPages,
 							currentPage: character.currentPage,
 							characters: updatedResults,
-							isLoading: true
+							loading: true,
+							error: ""
 						});
 					}
 				}
 			}
 		} catch (err) {
-			setCharacter((prevState) => { return { ...prevState, isLoading: false } });
 			console.log(err);
+			setCharacter((prevState) => { return { ...prevState, loading: false, error: err?.message } });
 		}
 	}
 
 	const fetchCharacters = async () => {
 		try {
-			setCharacter((prevState) => { return { ...prevState, isLoading: true, currentPage: 1 } });
+			setCharacter((prevState) => { return { ...prevState, loading: true, currentPage: 1 } });
 			const response = await axios.get(APIURL.FetchCharacterFirstPage);
 			if (response?.status == 200) {
 				const totalPages = response?.data?.info?.pages;
@@ -54,21 +57,23 @@ function useFetchCharacters() {
 							totalPages: totalPages,
 							currentPage: character.currentPage + 1,
 							characters: updatedResults,
-							isLoading: false
+							loading: false,
+							error: ""
 						});
 					} else {
 						setCharacter({
 							totalPages: totalPages,
 							currentPage: character.currentPage,
 							characters: updatedResults,
-							isLoading: true
+							loading: false,
+							error: ""
 						});
 					}
 				}
 			}
 		} catch (err) {
-			setCharacter((prevState) => { return { ...prevState, isLoading: false } });
-			console.log(err);
+			console.log(err?.message);
+			setCharacter((prevState) => { return { ...prevState, loading: false, error: err?.message } });
 		}
 	}
 
