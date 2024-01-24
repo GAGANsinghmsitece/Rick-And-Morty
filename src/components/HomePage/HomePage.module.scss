@@ -1,0 +1,30 @@
+.HomePage {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background-color: #fefefe;
+	overflow: auto;
+
+	&__Preloader {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 100%;
+		height: 100px;
+		background-color: #000;
+	}
+
+	&__Header {
+		display: block;
+		width: 100%;
+		height: 80px;
+		font-size: 35px;
+		font-weight: bold;
+		color: #2b2b3a;
+		padding: 10px;
+		text-align: left;
+		opacity: 0.8;
+	}
+}
